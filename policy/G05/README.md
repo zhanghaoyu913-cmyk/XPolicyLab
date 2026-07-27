@@ -1,21 +1,33 @@
 # G05 RoboDojo Adapter
 
-This adapter integrates the GitHub G0.5 checkout at
-`/efm-nas/efm-nas/group-jt/haoyu.zhang/GalaxeaVLA_github_port` with XPolicyLab. It does not use the vendored
-`policy/GalaxeaVLA/GalaxeaVLA` code.
+This adapter integrates a G0.5/GalaxeaVLA source checkout with XPolicyLab.
+Set `G05_ROOT` to that checkout before installation, training, or evaluation.
+
+## Installation
+
+```bash
+cd XPolicyLab/policy/G05
+export G05_ROOT=/path/to/GalaxeaVLA_github_port
+# Optional: use a specific policy Python/virtualenv.
+export G05_PYTHON=/path/to/python
+bash install.sh
+```
 
 ## Training
 
 Default training uses G0.5 task config:
 
 ```bash
-cd /efm-nas/efm-nas/group-jt/haoyu.zhang/external/robodojo/XPolicyLab/policy/G05
-export ROBODOJO_LEROBOT_V30_ROOT=/efm-nas/efm-nas/group-jt/haoyu.zhang/external/robodojo/data/RoboDojo_lerobot_v30_video
+cd XPolicyLab/policy/G05
+export G05_ROOT=/path/to/GalaxeaVLA_github_port
+export ROBODOJO_LEROBOT_V30_ROOT=/path/to/RoboDojo_lerobot_v30_video
 bash train.sh RoboDojo cotrain arx_x5 joint 0 0,1,2,3,4,5,6,7
 ```
 
-For the GitHub G0.5 launcher, use
-`/efm-nas/efm-nas/group-jt/haoyu.zhang/GalaxeaVLA_github_port/scripts/run/finetune_robodojo_arx_x5_joint.sh`.
+`train.sh` is a thin wrapper around `${G05_ROOT}/scripts/run/finetune.sh`.
+Training length and checkpoint cadence remain controlled by the selected G0.5
+task config and optional Hydra overrides; this adapter does not hard-code a
+checkpoint step.
 
 ## Evaluation
 
@@ -23,11 +35,12 @@ Set `G05_CKPT_PATH` to a G0.5 run directory or `.pt` checkpoint. Debug mode
 validates websocket wiring and action schema without the simulator:
 
 ```bash
-cd /efm-nas/efm-nas/group-jt/haoyu.zhang/external/robodojo/XPolicyLab/policy/G05
+cd XPolicyLab/policy/G05
 export EVAL_ENV_TYPE=debug
+export G05_ROOT=/path/to/GalaxeaVLA_github_port
 export G05_CKPT_PATH=/path/to/g05/run/or/checkpoints/checkpoint
 bash eval.sh RoboDojo stack_bowls cotrain arx_x5 joint 0 0 0 \
-  /mlplatform/haoyu.zhang/g05_runtime/g05_venv_nas base
+  /path/to/policy/python-or-venv base
 ```
 
 For simulator evaluation, unset `EVAL_ENV_TYPE` or set it to `sim` and make

@@ -49,11 +49,10 @@ class Model(ModelTemplate):
         self._obs: dict[str, Any] | None = None
         self._obs_batch: list[dict[str, Any]] = []
 
-        g05_root = Path(
-            model_cfg.get("g05_root")
-            or os.environ.get("G05_ROOT")
-            or "/efm-nas/efm-nas/group-jt/haoyu.zhang/GalaxeaVLA_github_port"
-        ).expanduser().resolve()
+        g05_root_raw = model_cfg.get("g05_root") or os.environ.get("G05_ROOT")
+        if not g05_root_raw:
+            raise FileNotFoundError("Set g05_root in deploy.yml/overrides or export G05_ROOT")
+        g05_root = Path(str(g05_root_raw)).expanduser().resolve()
         if not g05_root.exists():
             raise FileNotFoundError(f"G0.5 repo not found: {g05_root}")
         for path in (g05_root / "src", g05_root):
