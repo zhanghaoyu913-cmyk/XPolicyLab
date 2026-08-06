@@ -12,7 +12,7 @@ simulation remains on the evaluator/client side.
 Download the released checkpoint package from Hugging Face:
 
 ```bash
-huggingface-cli download OpenGalaxea/g05 \
+huggingface-cli download OpenGalaxea/g05-robodojo \
   g05_robodojo_fm_only_checkpoint.tar \
   g05_robodojo_fm_only_checkpoint.tar.sha256 \
   --local-dir ./checkpoints/g05
